@@ -1,5 +1,4 @@
 import { createContext, useReducer} from "react";
-import { useNavigate } from "react-router-dom";
 import githubReducer from "./GithubUserReducer";
 
 export const UserContext = createContext()
@@ -9,9 +8,9 @@ export const UserContextProvider = ({children}) => {
   const initialState = {
     users: [],
     user: {},
+    repos: [],
     loading: false
   }
-  const navigate = useNavigate()
 
   const [state, dispatch] = useReducer(githubReducer, initialState)
   const setLoading = (isLoading) => {
@@ -30,9 +29,7 @@ export const UserContextProvider = ({children}) => {
           Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}` 
       }
     }) 
-    console.log(response.status)
     if (response.status === 404){
-      console.log(response)
       window.location = '/notfound'
     } else {
       const data = await response.json()
@@ -40,12 +37,29 @@ export const UserContextProvider = ({children}) => {
       dispatch({
         type: "GET_USER_PROFILE",
         payload: {
-          user: data,
-          loading: false
+          user: data
         }
       })
-      navigate(`/user/${login}`)
     }
+  }
+
+  const getUserRepos = async (login) => {
+    setLoading(true)
+    const response = await fetch(`${process.env.REACT_APP_GITHUB_URL}/users/${login}/repos`, {
+      headers: {
+          Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}` 
+      }
+    }) 
+      const data = await response.json()
+
+      dispatch({
+        type: "GET_USER_REPO",
+        payload: {
+          repos: data
+        }
+      })
+      console.log(data)
+      // console.log(state.repos)
   }
 
   const searchUsers = async(term) => {
@@ -95,7 +109,7 @@ export const UserContextProvider = ({children}) => {
   // }, [])
 
 
-    return <UserContext.Provider value={{users: state.users, isLoading: state.loading, user: state.user, searchUsers, clearUsers, getUser}}>
+    return <UserContext.Provider value={{users: state.users, isLoading: state.loading, user: state.user, repos: state.repos, getUserRepos, searchUsers, clearUsers, getUser}}>
         {children}
     </UserContext.Provider>
 }

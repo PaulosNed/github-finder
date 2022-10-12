@@ -1,9 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { UserContext } from '../../Context/github/GithubUserContext'
 
 function UserItem({user}) {
-    const {getUser} = useContext(UserContext)
   return (
     <div className='card shadow-md compact side bg-base-100'>
         <div className="flex-row items-center space-x-4 card-body">
@@ -14,7 +12,7 @@ function UserItem({user}) {
             </div>
             <div>
                 <h2 className="card-title">{user.login}</h2>
-                <p onClick={() => getUser(user.login)} className="text-base-content text-opacity-40">Visit Profile</p>
+                <Link className="text-base-content text-opacity-40" to={`/user/${user.login}`}>Visit Profile</Link>
             </div>
         </div>
     </div>
