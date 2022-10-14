@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {  GrCheckmark, GrClose } from 'react-icons/gr'
 import { UserContext } from '../../Context/github/GithubUserContext'
 import Spinner from '../layout/Spinner'
@@ -39,6 +39,7 @@ function Profile() {
     } else{
         return (
             <div className="mx-auto md:max-w-5xl mt-6 min-w-0 break-words shadow-lg bg-neutral w-full mb-6 rounded-xl mt-16">
+            <Link to='/' className="btn btn-ghost">Back to Search</Link>
             <div className="px-6">
                 <div className="flex flex-wrap justify-center">
                     <div className="w-full flex justify-center">
