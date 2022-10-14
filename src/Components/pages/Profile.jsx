@@ -4,17 +4,37 @@ import {  GrCheckmark, GrClose } from 'react-icons/gr'
 import { UserContext } from '../../Context/github/GithubUserContext'
 import Spinner from '../layout/Spinner'
 import RepoList from '../repos/RepoList'
+import { getUser, getUserRepos } from '../../Context/github/GithubUserAction'
 
 function Profile() {
     const params = useParams()
-    const {user, getUser, isLoading, repos, getUserRepos} = useContext(UserContext)
+    const {user, loading, repos, dispatch} = useContext(UserContext)
 
     useEffect(() => {
-        getUser(params.login)
-        getUserRepos(params.login)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-    if (isLoading){
+        dispatch({type: "SET_LOADING"})
+        const userData = async() => {
+            const userData = await getUser(params.login)
+            dispatch({
+                type: "GET_USER_PROFILE",
+                payload: {
+                    user: userData
+                }
+            })
+        }
+        const userRepos = async() => {
+            const userRepo = await getUserRepos(params.login)
+            dispatch({
+                type: "GET_USER_REPO",
+                payload: {
+                  repos: userRepo
+                }
+              })
+        }
+        userData()
+        userRepos()
+        
+    }, [dispatch, params.login])
+    if (loading){
         return <Spinner />
     } else{
         return (

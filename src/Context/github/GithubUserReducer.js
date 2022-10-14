@@ -9,7 +9,7 @@ const githubReducer = (state, action) => {
         case 'SET_LOADING':
             return {
                 ...state,
-                loading: action.payload.loading
+                loading: true
             }
         case 'CLEAR_USERS':
             return {
